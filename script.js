@@ -16,13 +16,14 @@ function createPlayer(name, sign){
 
 function createGame(gameboard){
 
-    let moveCount = 0
+    let moveCount = 0;
+
+
     
 
-    function play(player){
-        const cords = prompt('Tell me coordinates! x,y: ')
+    function play(player, cords){
 
-        const [x,y] = cords.split(',');
+        const [x,y] = cords.split('-');
 
         if(gameboard.board[x][y] === 'X' || gameboard.board[x][y] === 'O'){
             return console.log('Its taken!');
@@ -33,6 +34,10 @@ function createGame(gameboard){
 
         //print board
         console.log(gameboard)
+
+        renderBoard(cords, player.sign)
+
+
 
 
         if(moveCount >= 5){
@@ -96,6 +101,11 @@ function createGame(gameboard){
 
     }
 
+    function renderBoard(cords, sign){
+        const gridElement = document.querySelector(`[id='${cords}']`);
+        gridElement.innerHTML = sign;
+    }
+
         return {play}
 }
 
@@ -103,3 +113,13 @@ const gameBoard = createGameboard();
 const player1 = createPlayer('Szefa', 'X');
 const player2 = createPlayer('Xana', 'O');
 const game = createGame(gameBoard);
+let currentPlayer = player1;
+
+const gridButtons = document.querySelectorAll('.grid-element')
+gridButtons.forEach(grid => {
+    grid.addEventListener('click', (e) =>{
+        game.play(currentPlayer, grid.id)
+        currentPlayer = currentPlayer == player1 ? player2 : player1;
+    })
+    
+});
