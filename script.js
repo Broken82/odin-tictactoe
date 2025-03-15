@@ -44,10 +44,8 @@ function createGame(gameboard){
     function checkVictory(player, x, y){
 
         console.log('checking victory')
-
         let gameboardSize = gameboard.board.length;
 
-        console.log(gameboardSize)
 
         //check columns
         for(let i = 0; i < gameboardSize; i++){
@@ -74,18 +72,29 @@ function createGame(gameboard){
 
         //check diagnolas
 
+        for(let i = 0; i < gameboardSize; i++){
+            console.log('checking diagnolas for ' + player.sign)
+            if(gameboard.board[i][i] != player.sign) {
+                break
+            }
+            if(i == gameboardSize - 1){
+                console.log(`${player.name} has won!`);
+            }
+        }
 
+        //check antidiagnolas
 
-        
-
-
-        
+        for(let i = 0; i < gameboardSize; i++){
+            console.log('checking anti-diagnolas for ' + player.sign)
+            if(gameboard.board[i][gameboardSize - 1 - i] != player.sign) {
+                break
+            }
+            if(i == gameboardSize - 1){
+                console.log(`${player.name} has won!`);
+            }
+        }
 
     }
-
-
-
-
 
         return {play}
 }
