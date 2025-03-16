@@ -14,9 +14,10 @@ function createPlayer(name, sign){
     return {name, sign}
 }
 
-function createGame(gameboard){
+function createGame(gameboard, player1, player2){
 
     let moveCount = 0;
+    let currentPlayer = player1;
 
 
     
@@ -26,6 +27,7 @@ function createGame(gameboard){
         const [x,y] = cords.split('-');
 
         if(gameboard.board[x][y] === 'X' || gameboard.board[x][y] === 'O'){
+            currentPlayer = player
             return console.log('Its taken!');
         }
         gameboard.board[x][y] = player.sign;
@@ -34,9 +36,9 @@ function createGame(gameboard){
 
         //print board
         console.log(gameboard)
-
-        renderBoard(cords, player.sign)
-
+        //change player
+        currentPlayer = currentPlayer == player1 ? player2 : player1;
+        renderBoard(cords, player)
 
 
 
@@ -59,7 +61,8 @@ function createGame(gameboard){
                 break;
             }
             if(i == gameboardSize - 1){
-                console.log(`${player.name} has won!`);
+                alert(`${player.name} has won!`);
+                reload();
             }
         }
 
@@ -70,7 +73,8 @@ function createGame(gameboard){
                 break
             }
             if(i == gameboardSize - 1){
-                console.log(`${player.name} has won!`);
+                alert(`${player.name} has won!`);
+                reload();
             }
 
         }
@@ -83,7 +87,8 @@ function createGame(gameboard){
                 break
             }
             if(i == gameboardSize - 1){
-                console.log(`${player.name} has won!`);
+                alert(`${player.name} has won!`);
+                reload();
             }
         }
 
@@ -95,31 +100,55 @@ function createGame(gameboard){
                 break
             }
             if(i == gameboardSize - 1){
-                console.log(`${player.name} has won!`);
+                alert(`${player.name} has won!`);
+                reload();
             }
         }
 
     }
 
-    function renderBoard(cords, sign){
+    function renderBoard(cords, player){
         const gridElement = document.querySelector(`[id='${cords}']`);
-        gridElement.innerHTML = sign;
+        gridElement.innerHTML = player.sign;
+
+       document.querySelector('h2').innerHTML = `${currentPlayer.sign}'s turn`
     }
 
-        return {play}
+    function registerEventListener(){
+        console.log('Game started')
+        const gridButtons = document.querySelectorAll('.grid-element')
+            gridButtons.forEach(grid => {
+                grid.addEventListener('click', (e) =>{
+                play(currentPlayer, grid.id)
+                })
+    
+    });
+
+    }
+
+        return {play, registerEventListener}
 }
 
 const gameBoard = createGameboard();
-const player1 = createPlayer('Szefa', 'X');
-const player2 = createPlayer('Xana', 'O');
-const game = createGame(gameBoard);
-let currentPlayer = player1;
 
-const gridButtons = document.querySelectorAll('.grid-element')
-gridButtons.forEach(grid => {
-    grid.addEventListener('click', (e) =>{
-        game.play(currentPlayer, grid.id)
-        currentPlayer = currentPlayer == player1 ? player2 : player1;
-    })
-    
-});
+const form = document.querySelector('form');
+const input1 = document.querySelector('#player1').value;
+const input2 = document.querySelector('#player2').value;
+form.addEventListener('submit', (e)=>{
+    const player1 = createPlayer(input1, 'X');
+    const player2 = createPlayer(input2, 'O'); 
+    const game = createGame(gameBoard, player1, player2);
+    game.registerEventListener();
+    e.preventDefault()
+
+})
+
+form.addEventListener('reset', () =>{
+    reload()
+})
+
+
+
+function reload(){
+    window.location.reload()
+}
